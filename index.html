@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mini YouTube İzleyici</title>
+    <style>
+      body {
+        background: #111;
+        color: #fff;
+        font-family: sans-serif;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
+      h2 {
+        margin-bottom: 20px;
+      }
+      #video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+        justify-content: center;
+        padding: 10px;
+      }
+      .video-wrapper {
+        position: relative;
+        box-shadow: 0 0 10px #000;
+        transition: transform 0.3s ease;
+      }
+      .video-wrapper:hover {
+        transform: scale(1.05);
+      }
+      .video-wrapper::after {
+        content: attr(data-title);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        font-size: 12px;
+        padding: 4px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .video-wrapper:hover::after {
+        opacity: 1;
+      }
+      iframe {
+        width: 100%;
+        height: 135px;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>🎬 Otomatik Video İzleyici</h2>
+    <div id="video-grid"></div>
+
+    <script>
+      const videoData = [
+        { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                                                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                                                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                                                                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
+                                                                                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
+     
+        { id: "6byM1j52USQ", title: "NomadScreen #12" }
+      ];
+/*   { id: "vD5h_XjAcms", title: "NomadScreen #2" },
+        { id: "sdwhtOzknPo", title: "NomadScreen #3" },
+        { id: "EekRzaHQP_0", title: "NomadScreen #4" },
+          { id: "SVftQYGv3lk", title: "NomadScreen #5" },
+        { id: "vD5h_XjAcms", title: "NomadScreen #6" },
+        { id: "sdwhtOzknPo", title: "NomadScreen #7" },
+        { id: "EekRzaHQP_0", title: "NomadScreen #8" },
+            { id: "SVftQYGv3lk", title: "NomadScreen #9" },
+              "6byM1j52USQ",
+        { id: "vD5h_XjAcms", title: "NomadScreen #10" },
+        { id: "sdwhtOzknPo", title: "NomadScreen #11" },*/
+      const playlistId = "PLCp_84MZARpbgaZGLE7cBvB7RkDwBJM_f";
+      const container = document.getElementById("video-grid");
+
+      videoData.forEach(({ id, title }) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "video-wrapper";
+        wrapper.setAttribute("data-title", title);
+
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}`;
+        iframe.allow = "autoplay; encrypted-media";
+        iframe.allowFullscreen = true;
+
+        wrapper.appendChild(iframe);
+        container.appendChild(wrapper);
+      });
+
+      const playlistWrapper = document.createElement("div");
+      playlistWrapper.className = "video-wrapper";
+      playlistWrapper.setAttribute("data-title", "NomadScreen Playlist");
+
+      const playlistIframe = document.createElement("iframe");
+      playlistIframe.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&mute=1`;
+      playlistIframe.allow = "autoplay; encrypted-media";
+      playlistIframe.allowFullscreen = true;
+
+      playlistWrapper.appendChild(playlistIframe);
+      container.appendChild(playlistWrapper);
+    </script>
+  </body>
+</html>
