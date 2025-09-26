@@ -1,118 +1,195 @@
 <!DOCTYPE html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Mini YouTube İzleyici</title>
-    <style>
-      body {
-        background: #111;
-        color: #fff;
-        font-family: sans-serif;
-        margin: 0;
-        padding: 20px;
-        text-align: center;
-      }
-      h2 {
-        margin-bottom: 20px;
-      }
-      #video-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 12px;
-        justify-content: center;
-        padding: 10px;
-      }
-      .video-wrapper {
-        position: relative;
-        box-shadow: 0 0 10px #000;
-        transition: transform 0.3s ease;
-      }
-      .video-wrapper:hover {
-        transform: scale(1.05);
-      }
-      .video-wrapper::after {
-        content: attr(data-title);
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0, 0, 0, 0.7);
-        color: #fff;
-        font-size: 12px;
-        padding: 4px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .video-wrapper:hover::after {
-        opacity: 1;
-      }
-      iframe {
-        width: 100%;
-        height: 135px;
-        border: none;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>🎬 Otomatik Video İzleyici</h2>
-    <div id="video-grid"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NomadScreen - Kült ve kamuya açık filmler için özel video galerisi." />
+  <title>NomadScreen Galeri</title>
+  <style>
+    :root {
+      --bg: #111;
+      --text: #fff;
+      --accent: #f39c12;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #theme-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    #search {
+      width: 100%;
+      max-width: 300px;
+      padding: 8px;
+      margin: 10px auto;
+      display: block;
+      border-radius: 4px;
+      border: none;
+    }
+    #video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .video-card {
+      background: #222;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 0 10px #000;
+      transition: transform 0.3s;
+      position: relative;
+    }
+    .video-card:hover {
+      transform: scale(1.03);
+    }
+    .thumbnail {
+      width: 100%;
+      height: auto;
+      cursor: pointer;
+    }
+    .info {
+      padding: 10px;
+    }
+    .tags {
+      font-size: 12px;
+      color: #aaa;
+    }
+    .like-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .comments {
+      margin-top: 8px;
+    }
+    .comments textarea {
+      width: 100%;
+      padding: 6px;
+      border-radius: 4px;
+      border: none;
+      resize: none;
+    }
+    iframe {
+      width: 100%;
+      height: 135px;
+      border: none;
+      margin-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+    .subscribe {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .subscribe a {
+      background: var(--accent);
+      color: #000;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <button id="theme-toggle">🌙 Tema</button>
+  <header>
+    <h1>🎬 NomadScreen Galerisi</h1>
+    <p>Kült ve kamuya açık filmlerden seçmeler</p>
+    <input type="text" id="search" placeholder="Film ara..." />
+  </header>
 
-    <script>
-      const videoData = [
-        { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                                                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                                                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                                                                        { id: "6byM1j52USQ", title: "NomadScreen #1" },
-                                                                                                { id: "6byM1j52USQ", title: "NomadScreen #1" },
-     
-        { id: "6byM1j52USQ", title: "NomadScreen #12" }
-      ];
-/*   { id: "vD5h_XjAcms", title: "NomadScreen #2" },
-        { id: "sdwhtOzknPo", title: "NomadScreen #3" },
-        { id: "EekRzaHQP_0", title: "NomadScreen #4" },
-          { id: "SVftQYGv3lk", title: "NomadScreen #5" },
-        { id: "vD5h_XjAcms", title: "NomadScreen #6" },
-        { id: "sdwhtOzknPo", title: "NomadScreen #7" },
-        { id: "EekRzaHQP_0", title: "NomadScreen #8" },
-            { id: "SVftQYGv3lk", title: "NomadScreen #9" },
-              "6byM1j52USQ",
-        { id: "vD5h_XjAcms", title: "NomadScreen #10" },
-        { id: "sdwhtOzknPo", title: "NomadScreen #11" },*/
-      const playlistId = "PLCp_84MZARpbgaZGLE7cBvB7RkDwBJM_f";
-      const container = document.getElementById("video-grid");
+  <div class="subscribe">
+    <a href="https://www.youtube.com/@NomadScreen" target="_blank">📺 Abone Ol</a>
+  </div>
 
-      videoData.forEach(({ id, title }) => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "video-wrapper";
-        wrapper.setAttribute("data-title", title);
+  <div id="video-grid"></div>
+
+  <script>
+    const videos = [
+      { id: "6byM1j52USQ", title: "NomadScreen #1", tags: ["Korku", "Kült"] },
+      { id: "vD5h_XjAcms", title: "NomadScreen #2", tags: ["Bilim Kurgu"] },
+      { id: "sdwhtOzknPo", title: "NomadScreen #3", tags: ["Gerilim"] },
+      { id: "EekRzaHQP_0", title: "NomadScreen #4", tags: ["Klasik"] },
+      { id: "SVftQYGv3lk", title: "NomadScreen #5", tags: ["Deneysel"] }
+    ];
+
+    const grid = document.getElementById("video-grid");
+
+    function renderVideos(filter = "") {
+      grid.innerHTML = "";
+      videos.forEach(({ id, title, tags }) => {
+        if (!title.toLowerCase().includes(filter.toLowerCase())) return;
+
+        const card = document.createElement("div");
+        card.className = "video-card";
+
+        const thumb = document.createElement("img");
+        thumb.src = `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+        thumb.className = "thumbnail";
+        thumb.loading = "lazy";
+        thumb.onclick = () => {
+          iframe.classList.toggle("hidden");
+        };
+
+        const info = document.createElement("div");
+        info.className = "info";
+        info.innerHTML = `<strong>${title}</strong><div class="tags">${tags.join(", ")}</div>`;
+
+        const likeBtn = document.createElement("button");
+        likeBtn.className = "like-btn";
+        likeBtn.textContent = "👍 Beğen";
+        likeBtn.onclick = () => alert("Beğenildi!");
+
+        const comments = document.createElement("div");
+        comments.className = "comments";
+        comments.innerHTML = `<textarea rows="2" placeholder="Yorum yaz..."></textarea>`;
 
         const iframe = document.createElement("iframe");
-        iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}`;
-        iframe.allow = "autoplay; encrypted-media";
+        iframe.src = `https://www.youtube.com/embed/${id}`;
+        iframe.className = "hidden";
         iframe.allowFullscreen = true;
 
-        wrapper.appendChild(iframe);
-        container.appendChild(wrapper);
+        card.append(thumb, info, likeBtn, comments, iframe);
+        grid.appendChild(card);
       });
+    }
 
-      const playlistWrapper = document.createElement("div");
-      playlistWrapper.className = "video-wrapper";
-      playlistWrapper.setAttribute("data-title", "NomadScreen Playlist");
+    document.getElementById("search").addEventListener("input", e => {
+      renderVideos(e.target.value);
+    });
 
-      const playlistIframe = document.createElement("iframe");
-      playlistIframe.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&mute=1`;
-      playlistIframe.allow = "autoplay; encrypted-media";
-      playlistIframe.allowFullscreen = true;
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+      const root = document.documentElement;
+      if (root.style.getPropertyValue("--bg") === "#fff") {
+        root.style.setProperty("--bg", "#111");
+        root.style.setProperty("--text", "#fff");
+      } else {
+        root.style.setProperty("--bg", "#fff");
+        root.style.setProperty("--text", "#000");
+      }
+    });
 
-      playlistWrapper.appendChild(playlistIframe);
-      container.appendChild(playlistWrapper);
-    </script>
-  </body>
+    renderVideos();
+  </script>
+</body>
 </html>
